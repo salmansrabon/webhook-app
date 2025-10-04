@@ -16,7 +16,10 @@ async function handleWebhook(request: NextRequest, method: string) {
   const secret = request.headers.get('x-webhook-secret')
 
   if (!secret || secret !== WEBHOOK_SECRET) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    return NextResponse.json({
+      error: 'Unauthorized',
+      statusCode: 403
+    }, { status: 403 })
   }
 
   const url = request.url
@@ -34,6 +37,17 @@ async function handleWebhook(request: NextRequest, method: string) {
     })
   }
 
+  // Parse the request body for response
+  let requestData = null
+  if (body) {
+    try {
+      requestData = JSON.parse(body)
+    } catch (error) {
+      // If not JSON, keep as string
+      requestData = body
+    }
+  }
+
   // Create request record
   const requestRecord = await prisma.request.create({
     data: {
@@ -41,7 +55,11 @@ async function handleWebhook(request: NextRequest, method: string) {
       method,
       headers: JSON.stringify(headers),
       body,
-      response: JSON.stringify({ message: 'Webhook received', timestamp: new Date().toISOString() }),
+      response: JSON.stringify({
+        data: requestData,
+        timestamp: new Date().toISOString(),
+        processed: true
+      }),
       statusCode: 200,
     }
   })
@@ -56,8 +74,10 @@ async function handleWebhook(request: NextRequest, method: string) {
   }))
 
   return NextResponse.json({
+    data: requestData,
     id: requestRecord.id,
-    message: 'Webhook processed successfully',
-    timestamp: requestRecord.createdAt
+    timestamp: requestRecord.createdAt,
+    status: 'processed',
+    statusCode: 200
   })
 }
