@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
 
@@ -202,7 +202,15 @@ export default function Dashboard() {
 
       {/* Main Area */}
       <div className="w-3/4 p-4">
-        <h1 className="text-2xl font-bold mb-4">Webhook Dashboard</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-2xl font-bold">Webhook Dashboard</h1>
+          <button
+            onClick={() => signOut()}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Logout
+          </button>
+        </div>
         {requests.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-64 text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mb-4"></div>
