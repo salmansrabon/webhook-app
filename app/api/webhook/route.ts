@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { broadcast } from '../events/route'
 
-const WEBHOOK_SECRET = '123e4567-e89b-12d3-a456-426614174000'
-
 export async function GET(request: NextRequest) {
   return handleWebhook(request, 'GET')
 }
@@ -13,15 +11,6 @@ export async function POST(request: NextRequest) {
 }
 
 async function handleWebhook(request: NextRequest, method: string) {
-  const secret = request.headers.get('x-webhook-secret')
-
-  if (!secret || secret !== WEBHOOK_SECRET) {
-    return NextResponse.json({
-      error: 'Unauthorized',
-      statusCode: 403
-    }, { status: 403 })
-  }
-
   const url = request.url
   const headers = Object.fromEntries(request.headers.entries())
   const body = method === 'POST' ? await request.text() : null

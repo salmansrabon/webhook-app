@@ -1,14 +1,25 @@
 # Webhook Dashboard
 
-A Next.js application for managing webhooks with authentication and request history.
+A Next.js application ## Webhook Endpoint
+
+Send requests to `/api/webhook` - the endpoint is publicly accessible and accepts both GET and POST requests.
+
+Example:
+```bash
+curl -X POST http://localhost:3010/api/webhook \
+  -d '{"key": "value"}'
+```
+
+The endpoint will process and store all incoming requests, returning a confirmation response. webhooks with authentication and request history.
 
 ## Features
 
-- Secure webhook endpoint that accepts GET and POST requests
-- API secret key validation (UUID: `123e4567-e89b-12d3-a456-426614174000`)
+- Public webhook endpoint that accepts GET and POST requests
+- Real-time dashboard updates using Server-Sent Events
+- Request history with detailed view (headers, body, response)
 - Admin login with fixed credentials (username: `admin`, password: `admin123`)
-- Dashboard to view endpoints and request history
-- Delete individual requests from history
+- Delete individual requests or clear all history
+- SQLite database for data persistence
 
 ## Setup
 
