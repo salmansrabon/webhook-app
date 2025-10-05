@@ -226,7 +226,22 @@ export default function Dashboard() {
             )}
             <div className="mb-4">
               <strong>Response:</strong>
-              <pre className="bg-gray-100 p-4 rounded mt-2 overflow-x-auto">{JSON.stringify(JSON.parse(selectedRequest.response), null, 2)}</pre>
+              <pre className="bg-gray-100 p-4 rounded mt-2 overflow-x-auto">
+                {JSON.stringify({
+                  data: (() => {
+                    if (!selectedRequest.body) return null;
+                    try {
+                      return JSON.parse(selectedRequest.body);
+                    } catch {
+                      return selectedRequest.body; // Return as string if not JSON
+                    }
+                  })(),
+                  id: selectedRequest.id,
+                  timestamp: selectedRequest.createdAt,
+                  status: 'processed',
+                  statusCode: selectedRequest.statusCode
+                }, null, 2)}
+              </pre>
             </div>
           </div>
         ) : (
