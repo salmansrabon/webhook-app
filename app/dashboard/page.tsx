@@ -22,6 +22,7 @@ export default function Dashboard() {
   const router = useRouter()
   const [requests, setRequests] = useState<Request[]>([])
   const [selectedRequest, setSelectedRequest] = useState<Request | null>(null)
+  const [headersExpanded, setHeadersExpanded] = useState(false)
   const eventSourceRef = useRef<EventSource | null>(null)
 
   useEffect(() => {
@@ -222,8 +223,20 @@ export default function Dashboard() {
               <strong>Endpoint:</strong> {selectedRequest.endpoint.url}
             </div>
             <div className="mb-4">
-              <strong>Headers:</strong>
-              <pre className="bg-gray-100 p-4 rounded mt-2 overflow-x-auto">{JSON.stringify(JSON.parse(selectedRequest.headers), null, 2)}</pre>
+              <div className="flex items-center justify-between cursor-pointer" onClick={() => setHeadersExpanded(!headersExpanded)}>
+                <strong>Headers</strong>
+                <svg
+                  className={`w-5 h-5 transform transition-transform ${headersExpanded ? 'rotate-90' : ''}`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+              {headersExpanded && (
+                <pre className="bg-gray-100 p-4 rounded mt-2 overflow-x-auto">{JSON.stringify(JSON.parse(selectedRequest.headers), null, 2)}</pre>
+              )}
             </div>
             {selectedRequest.body && (
               <div className="mb-4">
