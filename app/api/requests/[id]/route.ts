@@ -3,14 +3,16 @@ import { prisma } from '@/lib/prisma'
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params
+
   try {
     await prisma.request.delete({
-      where: { id: parseInt(params.id) }
+      where: { id: parseInt(id) }
     })
     return NextResponse.json({ message: 'Request deleted' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete request' }, { status: 500 })
   }
 }

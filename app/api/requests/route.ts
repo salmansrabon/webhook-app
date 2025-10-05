@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
       orderBy: { createdAt: 'desc' }
     })
     return NextResponse.json(requests)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch requests' }, { status: 500 })
   }
 }
@@ -23,7 +23,7 @@ export async function DELETE() {
   try {
     await prisma.request.deleteMany({})
     return NextResponse.json({ message: 'All requests deleted' })
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete all requests' }, { status: 500 })
   }
 }

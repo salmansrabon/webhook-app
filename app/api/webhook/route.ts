@@ -42,7 +42,7 @@ async function handleWebhook(request: NextRequest, method: string) {
   if (body) {
     try {
       requestData = JSON.parse(body)
-    } catch (error) {
+    } catch {
       // If not JSON, keep as string
       requestData = body
     }

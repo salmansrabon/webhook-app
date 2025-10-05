@@ -7,7 +7,7 @@ export async function GET() {
       orderBy: { createdAt: 'desc' }
     })
     return NextResponse.json(endpoints)
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to fetch endpoints' }, { status: 500 })
   }
 }
