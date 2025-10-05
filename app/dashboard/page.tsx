@@ -49,21 +49,28 @@ export default function Dashboard() {
       const data = JSON.parse(event.data)
       if (data.type === 'new_request') {
         fetchRequests().then(() => {
-          // Auto-select the latest request
+          // Auto-select the latest request only if no request is selected or if currently viewing the latest
           setTimeout(() => {
             setRequests(currentRequests => {
               if (currentRequests.length > 0) {
-                setSelectedRequest(currentRequests[0]) // Select the first (newest) request
+                setSelectedRequest(currentSelected => {
+                  // If no request is selected, or if the currently selected is the most recent, select the latest
+                  if (!currentSelected || currentSelected.id === currentRequests[0].id) {
+                    return currentRequests[0]
+                  }
+                  // Otherwise, keep the current selection
+                  return currentSelected
+                })
               }
               return currentRequests
             })
-          }, 100) // Small delay to ensure state is updated
+          }, 100)
         })
       }
     }
 
-    eventSource.onerror = (error) => {
-      console.error('EventSource error:', error)
+    eventSource.onerror = () => {
+      console.error('EventSource error')
       // Fallback to polling if SSE fails
       const interval = setInterval(fetchRequests, 2000)
       eventSourceRef.current = null
